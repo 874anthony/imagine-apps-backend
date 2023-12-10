@@ -19,8 +19,11 @@ export class PostsService {
     return this.postModel.find().exec();
   }
 
-  async findAllUserPosts(id: string): Promise<PostDocument[]> {
-    return await this.postModel.find({ user: id }).exec();
+  async findAllUserPosts(id: string, date?): Promise<PostDocument[]> {
+    let query = this.postModel.find({ user: id });
+
+    if (date) query = query.where('createdAt').gte(date);
+    return await query.exec();
   }
 
   async findPostsBetweenDates(
@@ -32,10 +35,14 @@ export class PostsService {
       .exec();
   }
 
-  async findPostsByWordInTitle(word: string): Promise<PostDocument[]> {
-    return await this.postModel
-      .find({ title: { $regex: word, $options: 'i' } })
-      .exec();
+  async findPostsByWordInTitleAndDate(
+    word: string,
+    date?,
+  ): Promise<PostDocument[]> {
+    let query = this.postModel.find({ title: { $regex: word, $options: 'i' } });
+
+    if (date) query = query.where('createdAt').gte(date);
+    return await query.exec();
   }
 
   async delete(userId: string, id: string): Promise<void> {

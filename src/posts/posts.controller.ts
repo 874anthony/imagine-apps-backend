@@ -29,8 +29,11 @@ export class PostsController {
   }
 
   @Get('my-posts')
-  async findAllUserPosts(@Request() request): Promise<PostDocument[]> {
-    return await this.postService.findAllUserPosts(request.user.id);
+  async findAllUserPosts(
+    @Request() request,
+    @Query('date') date,
+  ): Promise<PostDocument[]> {
+    return await this.postService.findAllUserPosts(request.user.id, date);
   }
 
   @Get('between-dates')
@@ -41,11 +44,12 @@ export class PostsController {
     return await this.postService.findPostsBetweenDates(startDate, endDate);
   }
 
-  @Get('word-in-title')
+  @Get('word-in-title-and-date')
   async findPostsByWordInTitle(
     @Query('word') word: string,
+    @Query('date') date,
   ): Promise<PostDocument[]> {
-    return await this.postService.findPostsByWordInTitle(word);
+    return await this.postService.findPostsByWordInTitleAndDate(word, date);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
