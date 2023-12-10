@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Post, PostDocument } from './schemas/post.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: mongoose.Model<Post>,
+  ) {}
 
   async create(createPostDto: CreatePostDto): Promise<PostDocument> {
     const createdPost = new this.postModel(createPostDto);
@@ -36,5 +38,12 @@ export class PostsService {
       .exec();
   }
 
-  // TODO: Delete post and logout user
+  async delete(userId: string, id: string): Promise<void> {
+    const post = await this.postModel.findById(id).exec();
+    const isOwner = post.user.toString() === userId;
+
+    if (!isOwner) throw new UnauthorizedException('You are not the owner');
+
+    await post.deleteOne().exec();
+  }
 }

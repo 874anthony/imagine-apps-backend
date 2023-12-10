@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostDocument } from './schemas/post.schema';
@@ -35,5 +46,11 @@ export class PostsController {
     @Query('word') word: string,
   ): Promise<PostDocument[]> {
     return await this.postService.findPostsByWordInTitle(word);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':id')
+  async delete(@Request() request, @Param('id') id: string): Promise<void> {
+    await this.postService.delete(request.user.id, id);
   }
 }

@@ -22,7 +22,7 @@ export class Post {
     ref: User.name,
     required: true,
   })
-  user: User;
+  user: User | mongoose.Schema.Types.ObjectId;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
