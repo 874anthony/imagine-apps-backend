@@ -20,6 +20,7 @@ export class AuthService {
 
     const payload = { id: user._id, email: user.email, name: user.name };
     return {
+      name: user.name,
       timestamp: new Date().toISOString(),
       access_token: await this.jwtService.signAsync(payload),
     };
@@ -29,6 +30,7 @@ export class AuthService {
     const user = await this.usersService.create(signUpDto);
     const payload = { id: user._id, email: user.email, name: user.name };
     return {
+      name: user.name,
       timestamp: new Date().toISOString(),
       access_token: await this.jwtService.signAsync(payload),
     };
