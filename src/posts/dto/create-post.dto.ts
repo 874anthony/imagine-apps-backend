@@ -9,7 +9,4 @@ export class CreatePostDto {
   @IsNotEmpty()
   @MaxLength(280)
   message: string;
-
-  @IsNotEmpty()
-  user: string;
 }

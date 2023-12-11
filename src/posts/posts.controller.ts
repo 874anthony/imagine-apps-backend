@@ -19,8 +19,11 @@ export class PostsController {
   constructor(private postService: PostsService) {}
 
   @Post()
-  async create(@Body() createPostDto: CreatePostDto): Promise<PostDocument> {
-    return await this.postService.create(createPostDto);
+  async create(
+    @Request() request,
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<PostDocument> {
+    return await this.postService.create(request.user.id, createPostDto);
   }
 
   @Get()
@@ -44,12 +47,12 @@ export class PostsController {
     return await this.postService.findPostsBetweenDates(startDate, endDate);
   }
 
-  @Get('word-in-title-and-date')
-  async findPostsByWordInTitle(
+  @Get('word-in-title-or-date')
+  async findPostsByWordInTitleOrDate(
     @Query('word') word: string,
     @Query('date') date,
   ): Promise<PostDocument[]> {
-    return await this.postService.findPostsByWordInTitleAndDate(word, date);
+    return await this.postService.findPostsByWordInTitleOrDate(word, date);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
